@@ -3,8 +3,10 @@ import com.example.userProfileGenerator.model.User;
 import com.example.userProfileGenerator.repository.ImagenRepository;
 import com.example.userProfileGenerator.model.Imagen;
 import com.example.userProfileGenerator.repository.UserRepository;
+import com.example.userProfileGenerator.service.ImagenService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -22,6 +24,10 @@ public class ImagenController {
 
     @Autowired
     private UserRepository userRepository;
+
+
+    @Autowired
+    private ImagenService imagenService;
 
     @PostMapping("/{usuarioId}")
     public Imagen uploadAvatar(@PathVariable Long usuarioId, @RequestParam("file") MultipartFile file) {
@@ -53,5 +59,29 @@ public class ImagenController {
         }
 
     }
+
+
+        // Endpoint para subir una nueva imagen o actualizar la existente
+        @PostMapping("/actualizar/{usuarioId}")
+        public ResponseEntity<String> actualizarAvatar(@PathVariable Long usuarioId, @RequestParam("file") MultipartFile file) {
+            try {
+                imagenService.guardarAvatar(usuarioId, file);
+                return ResponseEntity.ok("Imagen actualizada correctamente");
+            } catch (Exception e) {
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error al actualizar la imagen");
+            }
+        }
+
+        // Endpoint para eliminar la imagen
+        @DeleteMapping("/{usuarioId}")
+        public ResponseEntity<String> eliminarAvatar(@PathVariable Long usuarioId) {
+            try {
+                imagenService.eliminarAvatar(usuarioId);
+                return ResponseEntity.ok("Imagen eliminada correctamente");
+            } catch (Exception e) {
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error al eliminar la imagen");
+            }
+        }
 }
+
 

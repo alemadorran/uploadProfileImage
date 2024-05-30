@@ -10,4 +10,6 @@ public interface ImagenRepository extends JpaRepository<Imagen, Long> {
     // Método personalizado para encontrar la imagen por el ID del usuario
     Optional<Imagen> findByUserId(Long userId);
 
+    Integer deleteByUserId(Long usuarioId);
+
 }
